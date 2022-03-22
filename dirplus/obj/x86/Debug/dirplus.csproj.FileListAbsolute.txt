@@ -1,0 +1,5 @@
+D:\Schule\SharpDevelopPortable\Projects\dirplus\dirplus\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Schule\SharpDevelopPortable\Projects\dirplus\dirplus\bin\Debug\dirplus.exe
+D:\Schule\SharpDevelopPortable\Projects\dirplus\dirplus\bin\Debug\dirplus.pdb
+D:\Schule\SharpDevelopPortable\Projects\dirplus\dirplus\obj\x86\Debug\dirplus.exe
+D:\Schule\SharpDevelopPortable\Projects\dirplus\dirplus\obj\x86\Debug\dirplus.pdb
