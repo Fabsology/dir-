@@ -1,4 +1,4 @@
-﻿/* Made by Fabian Müller
+/* Made by Fabian Müller
  * GNU-License ♥
  * 
  * 
@@ -14,7 +14,7 @@ namespace dirplus
 {
     class Program
     {
-        public const string Version = "DiR++ Version 0.0.1. © 2022 Fabian Müller. Made in Germany.";
+        public const string Version = "DiR++ Version 0.0.2. © 2024 Fabian Müller. Made in Germany.";
         public static void Main(string[] args)
         {
             
@@ -65,51 +65,58 @@ namespace dirplus
             string [] subdirectoryEntries = Directory.GetDirectories(path); // Directory Content Array
             
             subdirectoryEntries = intelligentSort(subdirectoryEntries, args); // Search and sort Array
-            
-            
-            if (recursive) { // If argument "~" is set, work 1 depth recursive
-                
-                string [] localsubdirectoryEntries = Directory.GetDirectories(path);
-                int substringindex = localsubdirectoryEntries[0].LastIndexOf("\\")+1;
-                
-                // For each file in Directory
-                foreach(string subdirectory in intelligentSort(Directory.GetDirectories(path), args)) {
-                    
+
+
+            if(recursive) { // If argument "~" is set, work 1 depth recursive
+                string[] localsubdirectoryEntries = Directory.GetDirectories(path);
+                int substringindex = localsubdirectoryEntries.Length > 0 ? localsubdirectoryEntries[0].LastIndexOf("\\") + 1 : 0;
+
+                // For each subdirectory in the main directory
+                foreach (string subdirectory in intelligentSort(localsubdirectoryEntries, args))
+                {
                     DirectoryInfo dir = new DirectoryInfo(subdirectory);
                     string InfoString = "";
-                    try {
-                        drawFile(subdirectory.Substring(subdirectory.LastIndexOf("\\")+1) + InfoString,true, dir.GetFiles().Length.ToString() + " files");
-                        
+                    try
+                    {
+                        drawFile(subdirectory.Substring(subdirectory.LastIndexOf("\\") + 1) + InfoString, true, dir.GetFiles().Length.ToString() + " files");
+
                         int counter = 0;
                         string hierarchyChar = "├─■ "; // Visual Symbol to understand the depth as a subfolder-File.
-                        // For each file in Sub-Directory
-                        foreach(string subsubdirectory in intelligentSort(Directory.GetDirectories(subdirectory), args)) {
-                            
-                            if (counter == Directory.GetDirectories(subdirectory).Length-1){
+                        string[] subSubdirectoryEntries = Directory.GetDirectories(subdirectory);
+                        subSubdirectoryEntries = intelligentSort(subSubdirectoryEntries, args); // Sort and filter subdirectories
+
+                        // For each subdirectory in the subdirectory
+                        foreach (string subsubdirectory in subSubdirectoryEntries)
+                        {
+                            if (counter == subSubdirectoryEntries.Length - 1)
+                            {
                                 hierarchyChar = "└─■ ";
                             }
                             counter++;
                             DirectoryInfo subdir = new DirectoryInfo(subsubdirectory);
                             string subInfoString = "";
-                            try { // Write File info ->
-                                drawFile(hierarchyChar + subsubdirectory.Substring( subsubdirectory.LastIndexOf("\\")+1) + InfoString,true, dir.GetFiles().Length.ToString() + " files");
-                                listFiles(subsubdirectory,args,true); // List Files as Subdirectory-Files
-                            } catch (Exception e) { // Otherwise if not permitted, fuck it  ¯\_(ツ)_/¯
-                                drawFilePermissionError(hierarchyChar + subsubdirectory.Substring(subsubdirectory.LastIndexOf("\\")+1)  + InfoString,true);
-                                
-                                listFiles(subsubdirectory,args,true); // List Files as Subdirectory-Files
+                            try
+                            { // Write file info
+                                drawFile(hierarchyChar + subsubdirectory.Substring(subsubdirectory.LastIndexOf("\\") + 1) + InfoString, true, subdir.GetFiles().Length.ToString() + " files");
+                                listFiles(subsubdirectory, args, true); // List files in subdirectory
+                            }
+                            catch (Exception e)
+                            { // Handle access error
+                                drawFilePermissionError(hierarchyChar + subsubdirectory.Substring(subsubdirectory.LastIndexOf("\\") + 1) + InfoString, true);
+                                listFiles(subsubdirectory, args, true); // List files in subdirectory even if access error
                             }
                         }
-                    } catch (Exception e) {
-                        // Write Access - Error to Screen.
-                        drawFilePermissionError(subdirectory.Substring(subdirectory.LastIndexOf("\\")+1)  + InfoString,true);
                     }
-                    
+                    catch (Exception e)
+                    { // Handle access error for main subdirectory
+                        drawFilePermissionError(subdirectory.Substring(subdirectory.LastIndexOf("\\") + 1) + InfoString, true);
+                    }
                 }
             }
-            
+
+
             // For each File in Directory
-            foreach(string subdirectory in subdirectoryEntries) {
+            foreach (string subdirectory in subdirectoryEntries) {
                 DirectoryInfo dir = new DirectoryInfo(subdirectory);
                 string InfoString = "";
                 try { // Access okay-> Nice
